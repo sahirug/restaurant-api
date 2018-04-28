@@ -13,7 +13,7 @@ class App_User{
 
     public function add(){
         $password = password_hash($this->password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO app_user(name, email, password) VALUES ('$this->name', '$this->email',
+        $sql = "INSERT INTO app_users(name, email, password) VALUES ('$this->name', '$this->email',
                  '$password')";
 
         if ($this->conn->query($sql) === TRUE) {
@@ -22,12 +22,12 @@ class App_User{
             // echo '}';
             echo json_encode(['message' => 'User was added']);
         } else {
-            echo json_encode(['error' => $this->conn->errno]);
+            echo json_encode(['error' => $this->conn->error]);
         }         
     }
 
     public function authenticate($email, $password){   
-        $sql = "SELECT COUNT(*) as 'COUNT', password, id, name FROM app_user WHERE email = '$email'";
+        $sql = "SELECT COUNT(*) as 'COUNT', password, id, name FROM app_users WHERE email = '$email'";
         $result = $this->conn->query($sql);
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
