@@ -61,5 +61,33 @@ class Order{
             echo json_encode(['message' => 'No orders']);
         }
     }
+
+    public function get_rider_orders($employee_id){
+        $sql = "SELECT * FROM app_orders WHERE rider = '$employee_id' AND status = 'unpaid'";
+        $result = $this->conn->query($sql);
+        $orders = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($orders, $row);
+            }
+            echo json_encode($orders);
+        }else{
+            echo json_encode(['error' => 'no orders', 'status' => 404]);
+        }    
+    }
+
+    public function get_phone_orders($employee_id){
+        $sql = "SELECT * FROM phone_orders WHERE rider_id = '$employee_id' AND status = 'unpaid'";
+        $result = $this->conn->query($sql);
+        $orders = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($orders, $row);
+            }
+            echo json_encode($orders);
+        }else{
+            echo json_encode(['error' => 'no orders', 'status' => 404]);
+        }    
+    }
     
 }
