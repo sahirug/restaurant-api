@@ -89,5 +89,43 @@ class Order{
             echo json_encode(['error' => 'no orders', 'status' => 404]);
         }    
     }
+
+    public function complete_app_order($order_id){
+        $sql = "UPDATE app_orders SET status = 'paid' WHERE order_id = '$order_id'";
+        if($this->conn->query($sql) === TRUE){
+            echo json_encode(['message' => 'Updated', 'status' => 200]);
+        }else{
+            echo json_encode(['error' => $this->conn->error, 'status' => 400]);            
+        }
+    }
+
+    public function complete_phone_order($order_id){
+        $sql = "UPDATE phone_orders SET status = 'paid' WHERE order_id = '$order_id'";
+        if($this->conn->query($sql) === TRUE){
+            echo json_encode(['message' => 'Updated', 'status' => 200]);
+        }else{
+            echo json_encode(['error' => $this->conn->error, 'status' => 400]);            
+        }
+    }
+
+    public function get_meals($order_id, $order_type){
+        $table_name = '';
+        if($order_type == 'app'){
+            $table_name = 'meals_app_order';
+        }else{
+            $table_name = 'meals_phone_order';            
+        }
+        $sql = "SELECT * FROM $table_name WHERE order_id = '$order_id' ";
+        $result = $this->conn->query($sql);
+        $meals = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($meals, $row);
+                echo json_encode($meals);
+            }
+        }else{
+            echo json_encode(['error' => 'no meals', 'status' => 404]);            
+        }
+    }
     
 }
