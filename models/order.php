@@ -115,14 +115,16 @@ class Order{
         }else{
             $table_name = 'meals_phone_order';            
         }
-        $sql = "SELECT * FROM $table_name WHERE order_id = '$order_id' ";
+        $sql = "SELECT $table_name.*, meals.name, meals.unit_price FROM $table_name 
+                INNER JOIN meals ON meals.meal_id = $table_name.meal_id
+                WHERE $table_name.order_id = '$order_id' ";
         $result = $this->conn->query($sql);
         $meals = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 array_push($meals, $row);
-                echo json_encode($meals);
             }
+            echo json_encode($meals);
         }else{
             echo json_encode(['error' => 'no meals', 'status' => 404]);            
         }
